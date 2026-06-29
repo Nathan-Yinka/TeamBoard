@@ -386,6 +386,7 @@ export function DashboardPage(): JSX.Element {
           ) : selectedProjectId ? (
             <TaskList 
               tasks={tasks} 
+              statusCounts={tasksQuery.data?.pages?.[0]?.metadata?.statusCounts}
               onUpdate={updateTask} 
               onUpdateStatus={updateTaskStatus}
               onDelete={deleteTask} 

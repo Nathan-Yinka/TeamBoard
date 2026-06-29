@@ -34,7 +34,7 @@ export class TasksService {
   }
 
   async findByProject(projectId: string, query: TaskQueryDto): Promise<PaginatedResponse<TaskDto>> {
-    const { tasks, total } = await this.tasksRepository.findProjectTasks(projectId, query);
+    const { tasks, total, statusCounts } = await this.tasksRepository.findProjectTasks(projectId, query);
     
     const page = query.page || 1;
     const limit = query.limit || 20;
@@ -44,7 +44,10 @@ export class TasksService {
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
+      metadata: {
+        statusCounts
+      }
     };
   }
 

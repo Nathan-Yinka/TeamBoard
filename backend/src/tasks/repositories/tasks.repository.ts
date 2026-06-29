@@ -26,9 +26,9 @@ export class TasksRepository {
     return this.toRecord(task);
   }
 
-  async findProjectTasks(projectId: string, query: TaskQueryDto): Promise<{ tasks: TaskRecord[]; total: number }> {
+  async findProjectTasks(projectId: string, query: TaskQueryDto): Promise<{ tasks: TaskRecord[]; total: number; statusCounts: Record<string, number> }> {
     if (!Types.ObjectId.isValid(projectId)) {
-      return { tasks: [], total: 0 };
+      return { tasks: [], total: 0, statusCounts: { todo: 0, in_progress: 0, done: 0 } };
     }
 
     const filter: any = { 
@@ -57,14 +57,31 @@ export class TasksRepository {
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
-    const [tasks, total] = await Promise.all([
+    const [tasks, total, statusCountsRaw] = await Promise.all([
       this.taskModel.find(filter).sort(sortConfig).skip(skip).limit(limit).exec(),
-      this.taskModel.countDocuments(filter).exec()
+      this.taskModel.countDocuments(filter).exec(),
+      this.taskModel.aggregate([
+        { $match: filter },
+        { $group: { _id: '$status', count: { $sum: 1 } } }
+      ]).exec()
     ]);
+
+    const statusCounts: Record<string, number> = {
+      todo: 0,
+      in_progress: 0,
+      done: 0
+    };
+
+    for (const res of statusCountsRaw) {
+      if (res._id) {
+        statusCounts[res._id] = res.count;
+      }
+    }
 
     return {
       tasks: tasks.map((task) => this.toRecord(task)),
-      total
+      total,
+      statusCounts
     };
   }
 

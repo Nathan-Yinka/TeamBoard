@@ -55,6 +55,7 @@ export interface PaginatedResponse<T> {
   page: number;
   limit: number;
   totalPages: number;
+  metadata?: Record<string, any>;
 }
 
 export interface AuditLogDto {

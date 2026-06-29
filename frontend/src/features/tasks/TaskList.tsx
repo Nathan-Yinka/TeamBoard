@@ -14,6 +14,7 @@ interface TaskListProps {
   onLoadMore(): void;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  statusCounts?: Record<string, number>;
 }
 
 export interface EditableTaskPayload {
@@ -36,7 +37,7 @@ const TASK_PRIORITY_OPTIONS: readonly { value: TaskPriority; label: string }[] =
   { value: 'high' as TaskPriority, label: 'High' }
 ];
 
-export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore, hasNextPage, isFetchingNextPage }: TaskListProps): JSX.Element {
+export function TaskList({ tasks, statusCounts, onUpdate, onUpdateStatus, onDelete, onLoadMore, hasNextPage, isFetchingNextPage }: TaskListProps): JSX.Element {
   const isFetchingRef = useRef(false);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
           <div key={statusOption.value} className="flex flex-col flex-1 w-[85vw] min-w-[280px] md:w-auto md:min-w-[320px] lg:min-w-0 shrink-0 lg:shrink bg-slate-50/80 rounded-xl p-3 sm:p-4 border border-slate-200 h-full max-h-full snap-center md:snap-start">
             <h3 className="font-bold text-slate-800 mb-2 md:mb-4 pb-2 border-b border-slate-200 flex items-center justify-between text-sm md:text-base shrink-0">
               {statusOption.label}
-              <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{groupedTasks[statusOption.value].length}</span>
+              <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{statusCounts?.[statusOption.value] ?? groupedTasks[statusOption.value].length}</span>
             </h3>
             <div 
               className="flex flex-col gap-2.5 md:gap-3 overflow-y-auto flex-1 min-h-0 pr-1 pb-4 styled-scrollbar"
