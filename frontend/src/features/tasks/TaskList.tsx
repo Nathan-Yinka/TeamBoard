@@ -37,27 +37,14 @@ const TASK_PRIORITY_OPTIONS: readonly { value: TaskPriority; label: string }[] =
 ];
 
 export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore, hasNextPage, isFetchingNextPage }: TaskListProps): JSX.Element {
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     if (!hasNextPage || isFetchingNextPage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some(entry => entry.isIntersecting)) {
-          onLoadMore();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const elements = document.querySelectorAll('.load-more-trigger');
-    elements.forEach(el => observer.observe(el));
-
-    return () => {
-      elements.forEach(el => observer.unobserve(el));
-    };
-  }, [hasNextPage, isFetchingNextPage, onLoadMore, tasks]);
+    
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 100) {
+      onLoadMore();
+    }
+  }, [hasNextPage, isFetchingNextPage, onLoadMore]);
 
   if (tasks.length === 0) {
     return <p className="text-slate-500 text-sm text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-lg">No tasks found.</p>;
@@ -88,6 +75,7 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
             <div 
               className="flex flex-col gap-2.5 md:gap-3 overflow-y-auto flex-1 min-h-0 pr-1 pb-4 styled-scrollbar"
               style={{ WebkitOverflowScrolling: 'touch' }}
+              onScroll={handleScroll}
             >
               {groupedTasks[statusOption.value].map((task) => (
                 <TaskListItem key={task.id} task={task} onUpdate={onUpdate} onDelete={onDelete} onUpdateStatus={onUpdateStatus} />
@@ -96,9 +84,11 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
                 <p className="text-sm text-slate-400 text-center py-4">No tasks</p>
               )}
               
-              <div className="load-more-trigger h-4 shrink-0 flex justify-center items-center mt-2">
-                {isFetchingNextPage && <span className="text-xs text-slate-500">Loading...</span>}
-              </div>
+              {isFetchingNextPage && (
+                <div className="h-4 shrink-0 flex justify-center items-center mt-2">
+                  <span className="text-xs text-slate-500">Loading...</span>
+                </div>
+              )}
             </div>
           </div>
         ))}

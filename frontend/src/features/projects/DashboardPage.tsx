@@ -64,7 +64,7 @@ export function DashboardPage(): JSX.Element {
     queryKey: ['tasks', selectedProjectId, taskSearch, taskSortBy, taskSortDir],
     queryFn: ({ pageParam }) => tasksService.list(selectedProjectId ?? '', {
       page: pageParam,
-      limit: 50, // Higher limit for kanban style
+      limit: 10,
       search: taskSearch || undefined,
       sortBy: taskSortBy,
       sortDir: taskSortDir
