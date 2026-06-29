@@ -41,7 +41,7 @@ export function TourGuide({ run, onFinish }: TourGuideProps) {
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
 
     // Trigger onFinish if the tour was completed, skipped, or if the user clicked the close button
-    if (finishedStatuses.includes(status) || action === 'close' || type === EVENTS.TARGET_NOT_FOUND) {
+    if (finishedStatuses.includes(status) || action === 'close' || type === EVENTS.TARGET_NOT_FOUND || type === EVENTS.TOUR_END) {
       onFinish();
     }
   };
