@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: teamboard-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: MICROSERVICE_HOST
+        value: 127.0.0.1
+      - key: MICROSERVICE_PORT
+        value: 3001

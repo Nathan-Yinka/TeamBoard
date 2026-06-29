@@ -1,0 +1,16 @@
+{
+  "name": "teamboard",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "shared"
+  ],
+  "scripts": {
+    "build": "npm run build -w @teamboard/shared && npm run build -w teamboard-backend && npm run build -w teamboard-frontend",
+    "test": "npm test -w teamboard-backend",
+    "dev:backend": "npm run start:dev -w teamboard-backend",
+    "dev:frontend": "npm run dev -w teamboard-frontend"
+  }
+}
