@@ -50,9 +50,6 @@ export function DashboardPage(): JSX.Element {
 
   const handleTourFinish = () => {
     setIsTourRunning(false);
-    if (user && !user.hasCompletedTour) {
-      completeTourMutation.mutate();
-    }
   };
 
   const [projectSearch, setProjectSearch] = useState('');
@@ -473,6 +470,9 @@ export function DashboardPage(): JSX.Element {
               onClick={() => {
                 setIsWelcomeDialogOpen(false);
                 setIsTourRunning(true);
+                if (user && !user.hasCompletedTour) {
+                  completeTourMutation.mutate();
+                }
               }}
               style={{ cursor: 'pointer' }}
             >
