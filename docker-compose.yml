@@ -4,8 +4,8 @@ services:
     restart: unless-stopped
     ports:
       - "27017:27017"
-    env_file:
-      - .env
+    environment:
+      MONGO_INITDB_DATABASE: teamboard
     volumes:
       - mongo-data:/data/db
 
@@ -16,8 +16,11 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-    env_file:
-      - .env
+    environment:
+      MONGODB_URI: ${MONGODB_URI:-mongodb://mongo:27017/teamboard}
+      JWT_SECRET: ${JWT_SECRET:-development-secret-key-123}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173}
+      PORT: 3000
     depends_on:
       - mongo
 
@@ -26,10 +29,12 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        VITE_API_URL: http://localhost:3000
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
     restart: unless-stopped
     ports:
       - "5173:5173"
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
     depends_on:
       - backend
 

@@ -144,13 +144,9 @@ npm run dev:frontend
 
 Frontend runs on `http://localhost:5173`. Backend runs on `http://localhost:3000`.
 
-## Docker Setup
+## Docker Setup (Zero Configuration)
 
-Create the root environment file:
-
-```bash
-cp .env.example .env
-```
+You do not need to configure any `.env` files to run the application locally with Docker. Fallback development variables are automatically provided.
 
 Start everything:
 
@@ -158,10 +154,10 @@ Start everything:
 docker compose up --build
 ```
 
-Services:
+Services will automatically become available at:
 
 - Frontend: `http://localhost:5173`
-- Backend: `http://localhost:3000`
+- Backend API: `http://localhost:3000`
 - MongoDB: `localhost:27017`
 
 ## Environment Variables
