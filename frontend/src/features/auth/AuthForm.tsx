@@ -88,7 +88,7 @@ export function AuthForm({ mode }: AuthFormProps): JSX.Element {
             <TextField.Root
               name="password"
               type={showPassword ? 'text' : 'password'}
-              minLength={8}
+              minLength={mode === 'signup' ? 8 : 1}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               required
