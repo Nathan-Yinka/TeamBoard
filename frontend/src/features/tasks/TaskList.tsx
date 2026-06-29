@@ -37,14 +37,25 @@ const TASK_PRIORITY_OPTIONS: readonly { value: TaskPriority; label: string }[] =
 ];
 
 export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore, hasNextPage, isFetchingNextPage }: TaskListProps): JSX.Element {
+  const isFetchingRef = useRef(false);
+
+  useEffect(() => {
+    isFetchingRef.current = isFetchingNextPage;
+  }, [isFetchingNextPage]);
+
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    if (!hasNextPage || isFetchingNextPage) return;
+    if (!hasNextPage || isFetchingRef.current) return;
     
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    
+    // Prevent elastic scroll events on non-overflowing columns
+    if (scrollHeight <= clientHeight) return;
+
     if (scrollHeight - scrollTop <= clientHeight + 100) {
+      isFetchingRef.current = true;
       onLoadMore();
     }
-  }, [hasNextPage, isFetchingNextPage, onLoadMore]);
+  }, [hasNextPage, onLoadMore]);
 
   if (tasks.length === 0) {
     return <p className="text-slate-500 text-sm text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-lg">No tasks found.</p>;
