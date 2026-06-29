@@ -61,7 +61,7 @@ export function DashboardPage(): JSX.Element {
     queryKey: ['projects', 'all', projectSearch],
     queryFn: ({ pageParam }) => projectsService.list({ 
       page: pageParam, 
-      limit: 20, 
+      limit: 100, 
       search: projectSearch || undefined 
     }),
     initialPageParam: 1,
@@ -89,7 +89,7 @@ export function DashboardPage(): JSX.Element {
     queryKey: ['tasks', selectedProjectId, taskSearch, taskSortBy, taskSortDir],
     queryFn: ({ pageParam }) => tasksService.list(selectedProjectId ?? '', {
       page: pageParam,
-      limit: 10,
+      limit: 100,
       search: taskSearch || undefined,
       sortBy: taskSortBy,
       sortDir: taskSortDir
