@@ -40,8 +40,9 @@ You already have a `render.yaml` file properly configured in your repository, wh
 3. **CRITICAL STEP**: Before clicking deploy, you need to configure the build settings because this is a monorepo workspace!
    - **Framework Preset**: Select `Vite`.
    - **Root Directory**: Click "Edit" and select the `frontend` folder.
+   - **Build Command**: Turn on the override switch and paste this exactly: `cd .. && npm run build -w @teamboard/shared && cd frontend && npm run build`
    - **Environment Variables**: Add a new variable named `VITE_API_URL` and paste your Render backend URL (e.g., `https://teamboard-api.onrender.com`). Do *not* put a slash at the end.
-4. Click **Deploy**. Vercel will build your React app and give you a live public URL.
+4. Click **Deploy**. Vercel will now build the shared types first, and then build your React app seamlessly!
 
 ## 4. Final Polish
 Now that Vercel gave you a live frontend URL (e.g., `https://teamboard-frontend.vercel.app`):
