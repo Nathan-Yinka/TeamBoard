@@ -8,6 +8,7 @@ import { UpdateTaskDto } from '../dto/update-task.dto';
 import { UpdateTaskStatusDto } from '../dto/update-task-status.dto';
 import { TasksRepository } from '../repositories/tasks.repository';
 import { TaskRecord } from '../types/task-record.type';
+import { TASK_SOON_DUE_THRESHOLD_DAYS } from '../constants';
 
 @Injectable()
 export class TasksService {
@@ -144,6 +145,12 @@ export class TasksService {
   }
 
   private toDto(task: TaskRecord): TaskDto {
+    const now = new Date();
+    const isOverdue = task.dueDate ? task.dueDate < now : false;
+    const isSoonDue = task.dueDate && !isOverdue
+      ? task.dueDate.getTime() - now.getTime() < TASK_SOON_DUE_THRESHOLD_DAYS * 24 * 60 * 60 * 1000
+      : false;
+
     return {
       id: task.id,
       projectId: task.projectId,
@@ -152,6 +159,8 @@ export class TasksService {
       status: task.status,
       priority: task.priority,
       dueDate: task.dueDate ? task.dueDate.toISOString() : null,
+      isOverdue,
+      isSoonDue,
       createdAt: task.createdAt.toISOString(),
       updatedAt: task.updatedAt.toISOString()
     };

@@ -7,6 +7,7 @@ import { TaskQueryDto } from '../dto/task-query.dto';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 import { Task } from '../schemas/task.schema';
 import { TaskRecord } from '../types/task-record.type';
+import { TASK_SOON_DUE_THRESHOLD_DAYS } from '../constants';
 
 @Injectable()
 export class TasksRepository {
@@ -132,7 +133,7 @@ export class TasksRepository {
     if (objectIds.length === 0) return {};
 
     const now = new Date();
-    const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+    const threeDaysFromNow = new Date(now.getTime() + TASK_SOON_DUE_THRESHOLD_DAYS * 24 * 60 * 60 * 1000);
 
     const pipeline = [
       {

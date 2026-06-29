@@ -43,6 +43,8 @@ export interface TaskDto {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate: string | null;
+  isOverdue: boolean;
+  isSoonDue: boolean;
   createdAt: string;
   updatedAt: string;
 }

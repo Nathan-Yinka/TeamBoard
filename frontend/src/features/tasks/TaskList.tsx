@@ -118,8 +118,8 @@ function TaskListItem({ task, onUpdate, onUpdateStatus, onDelete }: TaskListItem
   const [dueDate, setDueDate] = useState<string>(task.dueDate?.slice(0, 10) ?? '');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date();
-  const isSoonDue = task.dueDate && !isOverdue && new Date(task.dueDate).getTime() - new Date().getTime() < 3 * 24 * 60 * 60 * 1000;
+  const isOverdue = task.isOverdue;
+  const isSoonDue = task.isSoonDue;
 
   let cardStyle = "border-slate-200 bg-white hover:border-teal-300";
   if (task.status !== 'done') {
