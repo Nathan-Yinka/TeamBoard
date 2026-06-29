@@ -3,6 +3,7 @@ services:
     name: teamboard-api
     runtime: docker
     plan: free
+    autoDeploy: true
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .
     envVars:
