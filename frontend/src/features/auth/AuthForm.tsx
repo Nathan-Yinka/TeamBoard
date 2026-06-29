@@ -6,6 +6,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { authService, LoginRequest, SignupRequest } from '../../services/auth.service';
 import { setCredentials } from '../../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { ApiErrorDisplay } from '../../components/ui/ApiErrorDisplay';
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -19,15 +20,15 @@ export function AuthForm({ mode }: AuthFormProps): JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<unknown>(null);
   const loginMutation = useMutation({
     mutationFn: (payload: LoginRequest) => authService.login(payload),
     onSuccess: (response) => {
       dispatch(setCredentials(response));
       navigate('/app');
     },
-    onError: () => {
-      setError('Unable to complete the request. Check your details and try again.');
+    onError: (err) => {
+      setError(err);
     }
   });
   const signupMutation = useMutation({
@@ -36,8 +37,8 @@ export function AuthForm({ mode }: AuthFormProps): JSX.Element {
       dispatch(setCredentials(response));
       navigate('/app');
     },
-    onError: () => {
-      setError('Unable to complete the request. Check your details and try again.');
+    onError: (err) => {
+      setError(err);
     }
   });
   const isSubmitting = loginMutation.isPending || signupMutation.isPending;
@@ -48,7 +49,7 @@ export function AuthForm({ mode }: AuthFormProps): JSX.Element {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    setError('');
+    setError(null);
     if (mode === 'signup') {
       signupMutation.mutate({ name, email, password });
       return;
@@ -106,7 +107,7 @@ export function AuthForm({ mode }: AuthFormProps): JSX.Element {
             </TextField.Root>
           </label>
 
-          {error ? <p className="text-red-600 font-bold text-sm mt-1">{error}</p> : null}
+          <ApiErrorDisplay error={error} />
 
           <Button type="submit" disabled={isSubmitting} size="3" className="mt-2 w-full cursor-pointer">
             {buttonLabel(mode, isSubmitting)}

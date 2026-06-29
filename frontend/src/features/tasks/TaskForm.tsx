@@ -3,6 +3,7 @@ import { FormEvent, useState } from 'react';
 import { Button as RadixButton } from '@radix-ui/themes';
 import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
+import { ApiErrorDisplay } from '../../components/ui/ApiErrorDisplay';
 
 const TASK_PRIORITY_OPTIONS: readonly { value: TaskPriority; label: string }[] = [
   { value: 'low' as TaskPriority, label: 'Low' },
@@ -23,10 +24,12 @@ export function TaskForm({ disabled, onCreate, onSuccess }: TaskFormProps): JSX.
   const [priority, setPriority] = useState<TaskPriority>(DEFAULT_PRIORITY);
   const [dueDate, setDueDate] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<unknown>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
     try {
       await onCreate(title, description, priority, dueDate);
@@ -35,6 +38,8 @@ export function TaskForm({ disabled, onCreate, onSuccess }: TaskFormProps): JSX.
       setPriority(DEFAULT_PRIORITY);
       setDueDate('');
       onSuccess?.();
+    } catch (err) {
+      setError(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -78,6 +83,9 @@ export function TaskForm({ disabled, onCreate, onSuccess }: TaskFormProps): JSX.
         onChange={(event) => setDueDate(event.target.value)}
         disabled={disabled}
       />
+      
+      <ApiErrorDisplay error={error} />
+
       <div className="flex justify-end gap-3 mt-2">
         <RadixButton size="2" type="submit" disabled={disabled || isSubmitting}>
           {isSubmitting ? 'Creating...' : 'Create Task'}

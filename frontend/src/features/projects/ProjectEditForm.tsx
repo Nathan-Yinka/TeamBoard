@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Button as RadixButton } from '@radix-ui/themes';
 import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
+import { ApiErrorDisplay } from '../../components/ui/ApiErrorDisplay';
 
 interface ProjectEditFormProps {
   project: ProjectDto | null;
@@ -15,6 +16,7 @@ export function ProjectEditForm({ project, onUpdate, onSuccess }: ProjectEditFor
   const [description, setDescription] = useState<string>('');
   const [dueDate, setDueDate] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<unknown>(null);
 
   useEffect(() => {
     setName(project?.name ?? '');
@@ -30,10 +32,13 @@ export function ProjectEditForm({ project, onUpdate, onSuccess }: ProjectEditFor
     }
 
     setIsSubmitting(true);
+    setError(null);
 
     try {
       await onUpdate(project.id, name, description, new Date(dueDate).toISOString());
       onSuccess?.();
+    } catch (err) {
+      setError(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -63,6 +68,9 @@ export function ProjectEditForm({ project, onUpdate, onSuccess }: ProjectEditFor
         rows={3}
         disabled={!project}
       />
+      
+      <ApiErrorDisplay error={error} />
+
       <div className="flex justify-end gap-3 mt-2">
         <RadixButton size="2" type="submit" disabled={!project || isSubmitting}>
           {isSubmitting ? 'Saving...' : 'Save Changes'}

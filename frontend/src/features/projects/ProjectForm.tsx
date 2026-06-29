@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { Button as RadixButton } from '@radix-ui/themes';
 import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
+import { ApiErrorDisplay } from '../../components/ui/ApiErrorDisplay';
 
 interface ProjectFormProps {
   onCreate(name: string, description: string, dueDate: string): Promise<void>;
@@ -13,10 +14,12 @@ export function ProjectForm({ onCreate, onSuccess }: ProjectFormProps): JSX.Elem
   const [description, setDescription] = useState<string>('');
   const [dueDate, setDueDate] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<unknown>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
     try {
       await onCreate(name, description, new Date(dueDate).toISOString());
@@ -24,6 +27,8 @@ export function ProjectForm({ onCreate, onSuccess }: ProjectFormProps): JSX.Elem
       setDescription('');
       setDueDate('');
       onSuccess?.();
+    } catch (err) {
+      setError(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -39,6 +44,9 @@ export function ProjectForm({ onCreate, onSuccess }: ProjectFormProps): JSX.Elem
         onChange={(event) => setDescription(event.target.value)}
         rows={3}
       />
+      
+      <ApiErrorDisplay error={error} />
+
       <div className="flex justify-end gap-3 mt-2">
         <RadixButton size="2" type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Creating...' : 'Create Project'}

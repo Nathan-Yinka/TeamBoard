@@ -4,6 +4,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
+import { ApiErrorDisplay } from '../../components/ui/ApiErrorDisplay';
 
 interface TaskListProps {
   tasks: TaskDto[];
@@ -117,6 +118,7 @@ function TaskListItem({ task, onUpdate, onUpdateStatus, onDelete }: TaskListItem
   const [priority, setPriority] = useState<TaskPriority>(task.priority);
   const [dueDate, setDueDate] = useState<string>(task.dueDate?.slice(0, 10) ?? '');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<unknown>(null);
 
   const isOverdue = task.isOverdue;
   const isSoonDue = task.isSoonDue;
@@ -130,10 +132,13 @@ function TaskListItem({ task, onUpdate, onUpdateStatus, onDelete }: TaskListItem
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
     try {
       await onUpdate(task.id, { title, description, status, priority, dueDate: new Date(dueDate).toISOString() });
       setIsEditing(false);
+    } catch (err) {
+      setError(err);
     } finally {
       setIsSubmitting(false);
     }
@@ -168,6 +173,7 @@ function TaskListItem({ task, onUpdate, onUpdateStatus, onDelete }: TaskListItem
           </label>
           <Input label="Due date" type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} />
         </div>
+        <ApiErrorDisplay error={error} />
         <div className="flex gap-2 mt-2">
           <Button type="submit" disabled={isSubmitting} className="flex-1">{isSubmitting ? 'Saving...' : 'Save'}</Button>
           <Button type="button" variant="secondary" onClick={() => setIsEditing(false)} className="flex-1">Cancel</Button>
