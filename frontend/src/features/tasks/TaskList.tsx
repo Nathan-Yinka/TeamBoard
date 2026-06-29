@@ -74,15 +74,21 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full h-full min-h-0">
-      <div className="flex overflow-x-auto gap-4 md:gap-6 items-start pb-4 snap-x snap-mandatory flex-1 min-h-0">
+    <div className="flex flex-col gap-4 md:gap-6 w-full h-full min-h-0">
+      <div 
+        className="flex overflow-x-auto gap-3 md:gap-6 items-start pb-4 snap-x snap-mandatory flex-1 min-h-0 styled-scrollbar"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         {TASK_STATUS_OPTIONS.map((statusOption) => (
           <div key={statusOption.value} className="flex flex-col flex-1 w-[85vw] min-w-[280px] md:w-auto md:min-w-[320px] lg:min-w-0 shrink-0 lg:shrink bg-slate-50/80 rounded-xl p-3 sm:p-4 border border-slate-200 h-full max-h-full snap-center md:snap-start">
-            <h3 className="font-bold text-slate-800 mb-3 md:mb-4 pb-2 border-b border-slate-200 flex items-center justify-between text-sm md:text-base shrink-0">
+            <h3 className="font-bold text-slate-800 mb-2 md:mb-4 pb-2 border-b border-slate-200 flex items-center justify-between text-sm md:text-base shrink-0">
               {statusOption.label}
               <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{groupedTasks[statusOption.value].length}</span>
             </h3>
-            <div className="flex flex-col gap-3 overflow-y-auto flex-1 min-h-0 pr-1 pb-4 styled-scrollbar">
+            <div 
+              className="flex flex-col gap-2.5 md:gap-3 overflow-y-auto flex-1 min-h-0 pr-1 pb-4 styled-scrollbar"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
               {groupedTasks[statusOption.value].map((task) => (
                 <TaskListItem key={task.id} task={task} onUpdate={onUpdate} onDelete={onDelete} onUpdateStatus={onUpdateStatus} />
               ))}

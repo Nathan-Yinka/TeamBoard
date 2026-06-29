@@ -266,8 +266,8 @@ export function DashboardPage(): JSX.Element {
 
       {/* Main Content */}
       <section className="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50/50">
-        <header className="bg-white border-b border-slate-200 px-4 md:px-8 py-4 md:py-6 flex flex-col gap-4 md:gap-6 shrink-0 shadow-sm relative z-0">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+        <header className="bg-white border-b border-slate-200 px-3 md:px-8 py-3 md:py-6 flex flex-col gap-3 md:gap-6 shrink-0 shadow-sm relative z-0">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 md:gap-4">
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <button 
@@ -279,7 +279,7 @@ export function DashboardPage(): JSX.Element {
                 <p className="text-xs font-bold text-teal-600 uppercase tracking-wider">Project</p>
               </div>
               <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-bold text-slate-900">{selectedProject?.name ?? 'No project selected'}</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">{selectedProject?.name ?? 'No project selected'}</h2>
                 
                 {selectedProjectId && isProjectOwner && (
                   <Dialog.Root open={isEditProjectOpen} onOpenChange={setIsEditProjectOpen}>
@@ -304,9 +304,9 @@ export function DashboardPage(): JSX.Element {
                   </Dialog.Root>
                 )}
               </div>
-              <p className="text-slate-500 mt-2">{selectedProject?.description ?? 'Create or select a project to start organizing tasks.'}</p>
+              <p className="text-xs md:text-sm text-slate-500 mt-1 md:mt-2 line-clamp-1 md:line-clamp-none">{selectedProject?.description ?? 'Create or select a project to start organizing tasks.'}</p>
               {selectedProject?.dueDate && (
-                <p className="text-xs font-medium text-slate-500 mt-1">Due: {new Date(selectedProject.dueDate).toLocaleDateString()}</p>
+                <p className="text-[11px] md:text-xs font-medium text-slate-500 mt-0.5 md:mt-1">Due: {new Date(selectedProject.dueDate).toLocaleDateString()}</p>
               )}
             </div>
             <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
@@ -332,7 +332,7 @@ export function DashboardPage(): JSX.Element {
 
           {/* Filters Bar */}
           {selectedProjectId && (
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2 md:gap-4">
               <div className="relative flex-1 w-full md:min-w-[200px]">
                 <Search size={16} className="absolute left-3 top-2.5 text-slate-400" />
                 <input 
@@ -370,7 +370,7 @@ export function DashboardPage(): JSX.Element {
           )}
         </header>
 
-        <div className="flex-1 flex flex-col min-h-0 overflow-hidden p-4 md:p-8 relative z-0">
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden p-3 md:p-8 relative z-0">
           {(projectsQuery.isError || tasksQuery.isError) && (
             <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 font-medium border border-red-100">
               Unable to load workspace data.
