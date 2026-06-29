@@ -3,4 +3,5 @@ export interface UserRecord {
   name: string;
   email: string;
   passwordHash: string;
+  hasCompletedTour: boolean;
 }

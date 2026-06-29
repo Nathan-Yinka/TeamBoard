@@ -29,11 +29,16 @@ export class UsersService {
     return this.usersRepository.findById(userId);
   }
 
+  async completeTour(userId: string): Promise<UserRecord | null> {
+    return this.usersRepository.completeTour(userId);
+  }
+
   toAuthUser(user: UserRecord): AuthUser {
     return {
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      hasCompletedTour: user.hasCompletedTour
     };
   }
 }

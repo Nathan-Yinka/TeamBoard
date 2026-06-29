@@ -11,9 +11,15 @@ import { TaskForm } from '../tasks/TaskForm';
 import { EditableTaskPayload, TaskList } from '../tasks/TaskList';
 import { ProjectEditForm } from './ProjectEditForm';
 import { ProjectForm } from './ProjectForm';
+import { TourGuide } from '../../components/TourGuide';
 import { ProjectList } from './ProjectList';
-import { Plus, Settings, LogOut, LayoutDashboard, Search, Filter, SortDesc, Activity, Menu, X } from 'lucide-react';
+import { Plus, Settings, LogOut, LayoutDashboard, Search, Filter, SortDesc, Activity, Menu, X, HelpCircle } from 'lucide-react';
 import { AuditTrailSidebar } from './AuditTrailSidebar';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../../store/authSlice';
+import axios from 'axios';
+import { AuthUser } from '@teamboard/shared';
+import { apiClient } from '../../services/apiClient';
 
 export function DashboardPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -26,6 +32,27 @@ export function DashboardPage(): JSX.Element {
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
   const [isAuditTrailOpen, setIsAuditTrailOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isTourRunning, setIsTourRunning] = useState(false);
+
+  useEffect(() => {
+    if (user && user.hasCompletedTour === false) {
+      setIsTourRunning(true);
+    }
+  }, [user]);
+
+  const completeTourMutation = useMutation({
+    mutationFn: () => apiClient.patch<AuthUser, {}>('/auth/me/tour', {}),
+    onSuccess: (updatedUser) => {
+      dispatch(setUser(updatedUser));
+    }
+  });
+
+  const handleTourFinish = () => {
+    setIsTourRunning(false);
+    if (user && user.hasCompletedTour === false) {
+      completeTourMutation.mutate();
+    }
+  };
 
   const [projectSearch, setProjectSearch] = useState('');
   const [taskSearch, setTaskSearch] = useState('');
@@ -199,7 +226,7 @@ export function DashboardPage(): JSX.Element {
       )}
 
       {/* Sidebar */}
-      <aside className={`w-72 bg-white border-r border-slate-200 flex flex-col shadow-sm z-50 shrink-0 fixed inset-y-0 left-0 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`tour-step-1 w-72 bg-white border-r border-slate-200 flex flex-col shadow-sm z-50 shrink-0 fixed inset-y-0 left-0 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 text-teal-600 mb-1">
@@ -267,17 +294,25 @@ export function DashboardPage(): JSX.Element {
       {/* Main Content */}
       <section className="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50/50">
         <header className="bg-white border-b border-slate-200 px-3 md:px-8 py-3 md:py-6 flex flex-col gap-3 md:gap-6 shrink-0 shadow-sm relative z-0">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 md:gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <button 
-                  className="md:hidden p-1.5 -ml-1.5 text-slate-500 hover:bg-slate-100 rounded-md outline-none"
-                  onClick={() => setIsMobileMenuOpen(true)}
-                >
-                  <Menu size={20} />
-                </button>
-                <p className="text-xs font-bold text-teal-600 uppercase tracking-wider">Project</p>
-              </div>
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <button 
+                    className="md:hidden p-1.5 -ml-1.5 text-slate-500 hover:text-slate-900 rounded-md hover:bg-slate-100 outline-none"
+                    onClick={() => setIsMobileMenuOpen(true)}
+                  >
+                    <Menu size={20} />
+                  </button>
+                  <span className="text-[10px] md:text-xs font-bold text-teal-600 uppercase tracking-wider bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">Active Project</span>
+                  
+                  <button 
+                    onClick={() => setIsTourRunning(true)}
+                    className="ml-auto md:ml-2 flex items-center gap-1.5 px-2 py-1 text-xs font-semibold text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors"
+                  >
+                    <HelpCircle size={14} />
+                    <span className="hidden md:inline">Tour</span>
+                  </button>
+                </div>
               <div className="flex items-center gap-3">
                 <h2 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">{selectedProject?.name ?? 'No project selected'}</h2>
                 
@@ -311,13 +346,13 @@ export function DashboardPage(): JSX.Element {
             </div>
             <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
               {selectedProjectId && (
-                <RadixButton variant="soft" color="gray" size="3" style={{ cursor: 'pointer' }} className="flex-1 md:flex-none" onClick={() => setIsAuditTrailOpen(true)}>
+                <RadixButton variant="soft" color="gray" size="3" style={{ cursor: 'pointer' }} className="tour-step-5 flex-1 md:flex-none" onClick={() => setIsAuditTrailOpen(true)}>
                   <Activity size={16} /> Activity
                 </RadixButton>
               )}
               <Dialog.Root open={isCreateTaskOpen} onOpenChange={setIsCreateTaskOpen}>
                 <Dialog.Trigger>
-                  <RadixButton disabled={!selectedProjectId} size="3" style={{ cursor: 'pointer' }} className="flex-1 md:flex-none">
+                  <RadixButton disabled={!selectedProjectId} size="3" style={{ cursor: 'pointer' }} className="tour-step-4 flex-1 md:flex-none">
                     <Plus size={16} /> New Task
                   </RadixButton>
                 </Dialog.Trigger>
@@ -332,7 +367,7 @@ export function DashboardPage(): JSX.Element {
 
           {/* Filters Bar */}
           {selectedProjectId && (
-            <div className="flex flex-wrap items-center gap-2 md:gap-4">
+            <div className="tour-step-2 flex flex-col md:flex-row gap-3 pt-4 border-t border-slate-200">
               <div className="relative flex-1 w-full md:min-w-[200px]">
                 <Search size={16} className="absolute left-3 top-2.5 text-slate-400" />
                 <input 
@@ -407,6 +442,8 @@ export function DashboardPage(): JSX.Element {
         isOpen={isAuditTrailOpen} 
         onOpenChange={setIsAuditTrailOpen} 
       />
+
+      <TourGuide run={isTourRunning} onFinish={handleTourFinish} />
     </main>
   );
 }

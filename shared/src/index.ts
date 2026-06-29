@@ -12,8 +12,9 @@ export type { ApiErrorResponse, ApiSuccessResponse } from './api-response';
 
 export interface AuthUser {
   id: string;
-  name: string;
   email: string;
+  name: string;
+  hasCompletedTour: boolean;
 }
 
 export interface AuthResponse {

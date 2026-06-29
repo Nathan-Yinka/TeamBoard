@@ -43,11 +43,24 @@ export class UsersRepository {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
-      passwordHash: user.passwordHash
+      passwordHash: user.passwordHash,
+      hasCompletedTour: user.hasCompletedTour ?? false
     };
   }
 
   private isDuplicateKeyError(error: object): boolean {
     return 'code' in error && error.code === 11000;
+  }
+
+  async completeTour(userId: string): Promise<UserRecord | null> {
+    if (!Types.ObjectId.isValid(userId)) {
+      return null;
+    }
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { $set: { hasCompletedTour: true } },
+      { new: true }
+    ).exec();
+    return user ? this.toRecord(user) : null;
   }
 }

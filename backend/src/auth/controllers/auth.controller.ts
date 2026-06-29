@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCode, AuthResponse, AuthUser } from '@teamboard/shared';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -104,5 +104,19 @@ export class AuthController {
   me(@CurrentUser() user: AuthenticatedUser): Promise<AuthUser> {
     this.logger.debug(`Current user request received for ${user.id}`);
     return this.authService.getCurrentUser(user.id);
+  }
+
+  @Patch('me/tour')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Complete tour', description: 'Marks the interactive tour as completed for the current user.' })
+  @ApiEnvelopeOk({
+    description: 'Tour completed successfully.',
+    model: AuthUserResponseDto
+  })
+  @ApiEnvelopeUnauthorized()
+  completeTour(@CurrentUser() user: AuthenticatedUser): Promise<AuthUser> {
+    this.logger.debug(`Tour completion request received for ${user.id}`);
+    return this.authService.completeTour(user.id);
   }
 }

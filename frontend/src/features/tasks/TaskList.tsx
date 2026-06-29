@@ -75,7 +75,7 @@ export function TaskList({ tasks, statusCounts, onUpdate, onUpdateStatus, onDele
   return (
     <div className="flex flex-col gap-4 md:gap-6 w-full h-full min-h-0">
       <div 
-        className="flex overflow-x-auto gap-3 md:gap-6 items-start pb-4 snap-x snap-mandatory flex-1 min-h-0 styled-scrollbar"
+        className="tour-step-3 flex overflow-x-auto gap-3 md:gap-6 items-start pb-4 snap-x snap-mandatory flex-1 min-h-0 styled-scrollbar"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {TASK_STATUS_OPTIONS.map((statusOption) => (

@@ -52,6 +52,16 @@ export class AuthService {
     return this.usersService.toAuthUser(user);
   }
 
+  async completeTour(userId: string): Promise<AuthUser> {
+    const user = await this.usersService.completeTour(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('User no longer exists');
+    }
+
+    return this.usersService.toAuthUser(user);
+  }
+
   private async ensureEmailIsAvailable(email: string): Promise<void> {
     const existingUser = await this.usersService.findByEmail(email);
 
