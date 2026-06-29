@@ -75,11 +75,11 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col md:flex-row md:overflow-x-auto gap-6 items-start pb-4 md:snap-x">
+    <div className="flex flex-col gap-6 w-full">
+      <div className="flex overflow-x-auto gap-4 md:gap-6 items-start pb-4 snap-x snap-mandatory">
         {TASK_STATUS_OPTIONS.map((statusOption) => (
-          <div key={statusOption.value} className="flex-1 w-full md:min-w-[320px] lg:min-w-0 md:shrink-0 lg:shrink bg-slate-50/80 rounded-xl p-4 border border-slate-200 min-h-[300px] md:snap-start">
-            <h3 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200 flex items-center justify-between">
+          <div key={statusOption.value} className="flex-1 w-[85vw] min-w-[280px] md:w-auto md:min-w-[320px] lg:min-w-0 shrink-0 lg:shrink bg-slate-50/80 rounded-xl p-3 sm:p-4 border border-slate-200 min-h-[300px] snap-center md:snap-start">
+            <h3 className="font-bold text-slate-800 mb-3 md:mb-4 pb-2 border-b border-slate-200 flex items-center justify-between text-sm md:text-base">
               {statusOption.label}
               <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{groupedTasks[statusOption.value].length}</span>
             </h3>
@@ -141,7 +141,7 @@ function TaskListItem({ task, onUpdate, onUpdateStatus, onDelete }: TaskListItem
 
   if (isEditing) {
     return (
-      <form className="flex flex-col gap-3 p-4 border border-slate-300 rounded-xl bg-white shadow-sm" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-3 p-3 sm:p-4 border border-slate-300 rounded-xl bg-white shadow-sm" onSubmit={handleSubmit}>
         <Input label="Title" value={title} onChange={(event) => setTitle(event.target.value)} required />
         <Textarea
           label="Description"
@@ -177,9 +177,9 @@ function TaskListItem({ task, onUpdate, onUpdateStatus, onDelete }: TaskListItem
   }
 
   return (
-    <article className={`group flex flex-col gap-3 p-4 border rounded-xl shadow-sm transition-all duration-200 ${cardStyle}`}>
+    <article className={`group flex flex-col gap-2.5 sm:gap-3 p-3 sm:p-4 border rounded-xl shadow-sm transition-all duration-200 ${cardStyle}`}>
       <div className="flex justify-between items-start gap-2">
-        <h3 className="font-bold text-slate-900 text-[15px] leading-tight">{task.title}</h3>
+        <h3 className="font-bold text-slate-900 text-[14px] sm:text-[15px] leading-tight">{task.title}</h3>
         <select 
           className="text-xs bg-white border border-slate-200 text-slate-600 rounded px-1.5 py-0.5 outline-none hover:border-teal-400 cursor-pointer"
           value={task.status}
