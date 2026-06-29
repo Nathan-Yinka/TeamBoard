@@ -36,7 +36,7 @@ export function DashboardPage(): JSX.Element {
   const [isWelcomeDialogOpen, setIsWelcomeDialogOpen] = useState(false);
 
   useEffect(() => {
-    if (user && user.hasCompletedTour === false) {
+    if (user && !user.hasCompletedTour) {
       setIsWelcomeDialogOpen(true);
     }
   }, [user]);
@@ -50,7 +50,7 @@ export function DashboardPage(): JSX.Element {
 
   const handleTourFinish = () => {
     setIsTourRunning(false);
-    if (user && user.hasCompletedTour === false) {
+    if (user && !user.hasCompletedTour) {
       completeTourMutation.mutate();
     }
   };
