@@ -44,22 +44,20 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries.some(entry => entry.isIntersecting)) {
           onLoadMore();
         }
       },
       { threshold: 0.1 }
     );
 
-    const currentRef = loadMoreRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    const elements = document.querySelectorAll('.load-more-trigger');
+    elements.forEach(el => observer.observe(el));
 
     return () => {
-      if (currentRef) observer.unobserve(currentRef);
+      elements.forEach(el => observer.unobserve(el));
     };
-  }, [hasNextPage, isFetchingNextPage, onLoadMore]);
+  }, [hasNextPage, isFetchingNextPage, onLoadMore, tasks]);
 
   if (tasks.length === 0) {
     return <p className="text-slate-500 text-sm text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-lg">No tasks found.</p>;
@@ -76,28 +74,28 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
   });
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <div className="flex overflow-x-auto gap-4 md:gap-6 items-start pb-4 snap-x snap-mandatory">
+    <div className="flex flex-col gap-6 w-full h-full min-h-0">
+      <div className="flex overflow-x-auto gap-4 md:gap-6 items-start pb-4 snap-x snap-mandatory flex-1 min-h-0">
         {TASK_STATUS_OPTIONS.map((statusOption) => (
-          <div key={statusOption.value} className="flex-1 w-[85vw] min-w-[280px] md:w-auto md:min-w-[320px] lg:min-w-0 shrink-0 lg:shrink bg-slate-50/80 rounded-xl p-3 sm:p-4 border border-slate-200 min-h-[300px] snap-center md:snap-start">
-            <h3 className="font-bold text-slate-800 mb-3 md:mb-4 pb-2 border-b border-slate-200 flex items-center justify-between text-sm md:text-base">
+          <div key={statusOption.value} className="flex flex-col flex-1 w-[85vw] min-w-[280px] md:w-auto md:min-w-[320px] lg:min-w-0 shrink-0 lg:shrink bg-slate-50/80 rounded-xl p-3 sm:p-4 border border-slate-200 h-full max-h-full snap-center md:snap-start">
+            <h3 className="font-bold text-slate-800 mb-3 md:mb-4 pb-2 border-b border-slate-200 flex items-center justify-between text-sm md:text-base shrink-0">
               {statusOption.label}
               <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{groupedTasks[statusOption.value].length}</span>
             </h3>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 overflow-y-auto flex-1 min-h-0 pr-1 pb-4 styled-scrollbar">
               {groupedTasks[statusOption.value].map((task) => (
                 <TaskListItem key={task.id} task={task} onUpdate={onUpdate} onDelete={onDelete} onUpdateStatus={onUpdateStatus} />
               ))}
               {groupedTasks[statusOption.value].length === 0 && (
                 <p className="text-sm text-slate-400 text-center py-4">No tasks</p>
               )}
+              
+              <div className="load-more-trigger h-4 shrink-0 flex justify-center items-center mt-2">
+                {isFetchingNextPage && <span className="text-xs text-slate-500">Loading...</span>}
+              </div>
             </div>
           </div>
         ))}
-      </div>
-
-      <div ref={loadMoreRef} className="h-10 flex items-center justify-center">
-        {isFetchingNextPage && <span className="text-sm text-slate-500">Loading more...</span>}
       </div>
     </div>
   );

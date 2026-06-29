@@ -370,7 +370,7 @@ export function DashboardPage(): JSX.Element {
           )}
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 relative z-0">
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden p-4 md:p-8 relative z-0">
           {(projectsQuery.isError || tasksQuery.isError) && (
             <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 font-medium border border-red-100">
               Unable to load workspace data.
