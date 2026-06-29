@@ -5,8 +5,10 @@ import { AuthModule } from './auth/auth.module';
 import { AppEnvironment, loadEnvironment } from './config/env.schema';
 import { ProjectsModule } from './projects/projects.module';
 import { TasksModule } from './tasks/tasks.module';
+import { AppController } from './app.controller';
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
