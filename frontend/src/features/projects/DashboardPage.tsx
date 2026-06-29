@@ -33,10 +33,11 @@ export function DashboardPage(): JSX.Element {
   const [isAuditTrailOpen, setIsAuditTrailOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isTourRunning, setIsTourRunning] = useState(false);
+  const [isWelcomeDialogOpen, setIsWelcomeDialogOpen] = useState(false);
 
   useEffect(() => {
     if (user && user.hasCompletedTour === false) {
-      setIsTourRunning(true);
+      setIsWelcomeDialogOpen(true);
     }
   }, [user]);
 
@@ -226,7 +227,7 @@ export function DashboardPage(): JSX.Element {
       )}
 
       {/* Sidebar */}
-      <aside className={`tour-step-1 w-72 bg-white border-r border-slate-200 flex flex-col shadow-sm z-50 shrink-0 fixed inset-y-0 left-0 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`w-72 bg-white border-r border-slate-200 flex flex-col shadow-sm z-50 shrink-0 fixed inset-y-0 left-0 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 text-teal-600 mb-1">
@@ -296,7 +297,7 @@ export function DashboardPage(): JSX.Element {
         <header className="bg-white border-b border-slate-200 px-3 md:px-8 py-3 md:py-6 flex flex-col gap-3 md:gap-6 shrink-0 shadow-sm relative z-0">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="tour-step-1 flex items-center gap-2 mb-2">
                   <button 
                     className="md:hidden p-1.5 -ml-1.5 text-slate-500 hover:text-slate-900 rounded-md hover:bg-slate-100 outline-none"
                     onClick={() => setIsMobileMenuOpen(true)}
@@ -444,6 +445,42 @@ export function DashboardPage(): JSX.Element {
       />
 
       <TourGuide run={isTourRunning} onFinish={handleTourFinish} />
+
+      {/* Welcome Tour Dialog */}
+      <Dialog.Root open={isWelcomeDialogOpen} onOpenChange={setIsWelcomeDialogOpen}>
+        <Dialog.Content maxWidth="400px" className="rounded-xl shadow-2xl p-6 text-center">
+          <div className="mx-auto w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mb-4 text-teal-600">
+            <HelpCircle size={24} />
+          </div>
+          <Dialog.Title className="text-xl font-bold mb-2">Welcome to TeamBoard!</Dialog.Title>
+          <Dialog.Description className="text-slate-500 text-sm mb-6">
+            Would you like a quick tour of the platform to get familiar with the features?
+          </Dialog.Description>
+          
+          <div className="flex gap-3 justify-center">
+            <RadixButton 
+              variant="soft" 
+              color="gray" 
+              onClick={() => {
+                setIsWelcomeDialogOpen(false);
+                completeTourMutation.mutate();
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              Skip Tour
+            </RadixButton>
+            <RadixButton 
+              onClick={() => {
+                setIsWelcomeDialogOpen(false);
+                setIsTourRunning(true);
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              Start Tour
+            </RadixButton>
+          </div>
+        </Dialog.Content>
+      </Dialog.Root>
     </main>
   );
 }

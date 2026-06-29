@@ -1,6 +1,6 @@
 import { useState } from 'react';
 // @ts-ignore
-import { Joyride, STATUS, Step } from 'react-joyride';
+import { Joyride, STATUS, Step, EVENTS } from 'react-joyride';
 
 interface TourGuideProps {
   run: boolean;
@@ -12,7 +12,7 @@ export function TourGuide({ run, onFinish }: TourGuideProps) {
     {
       target: '.tour-step-1',
       content: 'Welcome to TeamBoard! Start by selecting an existing project or creating a new one here.',
-      placement: 'right'
+      placement: 'bottom' // Changed from right to bottom to be safer on mobile headers
     },
     {
       target: '.tour-step-2',
@@ -37,10 +37,11 @@ export function TourGuide({ run, onFinish }: TourGuideProps) {
   ]);
 
   const handleJoyrideCallback = (data: any) => {
-    const { status } = data;
+    const { status, type, action } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
 
-    if (finishedStatuses.includes(status)) {
+    // Trigger onFinish if the tour was completed, skipped, or if the user clicked the close button
+    if (finishedStatuses.includes(status) || action === 'close' || type === EVENTS.TARGET_NOT_FOUND) {
       onFinish();
     }
   };
@@ -63,6 +64,13 @@ export function TourGuide({ run, onFinish }: TourGuideProps) {
           primaryColor: '#0f766e', // teal-700
           textColor: '#334155', // slate-700
           backgroundColor: '#ffffff'
+        }
+      }}
+      floaterProps={{
+        styles: {
+          floater: {
+            maxWidth: '90vw'
+          }
         }
       }}
     />
