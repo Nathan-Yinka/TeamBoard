@@ -112,7 +112,20 @@ export class AuthController {
   @ApiOperation({ summary: 'Complete tour', description: 'Marks the interactive tour as completed for the current user.' })
   @ApiEnvelopeOk({
     description: 'Tour completed successfully.',
-    model: AuthUserResponseDto
+    model: AuthUserResponseDto,
+    example: {
+      success: true,
+      code: ApiCode.Success,
+      message: 'Request completed successfully',
+      data: {
+        id: '665f1c5c8a0f0f0012ab34cd',
+        name: 'Ada Lovelace',
+        email: 'ada@example.com',
+        hasCompletedTour: true
+      },
+      path: '/auth/me/tour',
+      timestamp: '2026-06-28T12:00:00.000Z'
+    }
   })
   @ApiEnvelopeUnauthorized()
   completeTour(@CurrentUser() user: AuthenticatedUser): Promise<AuthUser> {

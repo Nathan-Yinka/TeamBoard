@@ -10,6 +10,9 @@ export class AuthUserResponseDto {
 
   @ApiProperty({ example: 'ada@example.com' })
   email: string;
+
+  @ApiProperty({ example: true })
+  hasCompletedTour: boolean;
 }
 
 export class AuthResponseDto {
