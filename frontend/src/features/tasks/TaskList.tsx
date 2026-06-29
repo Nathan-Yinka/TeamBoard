@@ -76,9 +76,9 @@ export function TaskList({ tasks, onUpdate, onUpdateStatus, onDelete, onLoadMore
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col md:flex-row gap-6 items-start">
+      <div className="flex flex-col md:flex-row md:overflow-x-auto gap-6 items-start pb-4 md:snap-x">
         {TASK_STATUS_OPTIONS.map((statusOption) => (
-          <div key={statusOption.value} className="flex-1 w-full bg-slate-50/80 rounded-xl p-4 border border-slate-200 min-h-[300px]">
+          <div key={statusOption.value} className="flex-1 w-full md:min-w-[320px] lg:min-w-0 md:shrink-0 lg:shrink bg-slate-50/80 rounded-xl p-4 border border-slate-200 min-h-[300px] md:snap-start">
             <h3 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200 flex items-center justify-between">
               {statusOption.label}
               <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{groupedTasks[statusOption.value].length}</span>
