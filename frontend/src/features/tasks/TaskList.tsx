@@ -124,7 +124,7 @@ function TaskListItem({ task, onUpdate, onUpdateStatus, onDelete }: TaskListItem
   let cardStyle = "border-slate-200 bg-white hover:border-teal-300";
   if (task.status !== 'done') {
     if (isOverdue) cardStyle = "border-red-300 bg-red-50 hover:border-red-400";
-    else if (isSoonDue) cardStyle = "border-amber-300 bg-amber-50 hover:border-amber-400";
+    else if (isSoonDue) cardStyle = "border-amber-300 bg-amber-100 hover:border-amber-400";
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {

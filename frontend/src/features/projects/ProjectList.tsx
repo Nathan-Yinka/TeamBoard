@@ -72,7 +72,7 @@ export function ProjectList({ projects, selectedProjectId, onSelect, onLoadMore,
                     <AlertCircle size={12} /> {project.stats.overdueCount}
                   </Badge>
                 )}
-                {project.stats && project.stats.soonDueCount > 0 && project.stats.overdueCount === 0 && (
+                {project.stats && project.stats.soonDueCount > 0 && (
                   <Badge color="amber" variant="soft" size="1" title={`${project.stats.soonDueCount} tasks due soon`}>
                     <AlertCircle size={12} /> {project.stats.soonDueCount}
                   </Badge>
